@@ -30,8 +30,8 @@ The CLA ensures that QuantifiedCode has clear licensing for all contributions to
 
 1. Download a copy of the CLA:
 
-    * [https://github.com/quantifiedcode/checkmate/raw/master/icla.pdf](Individual Contributor License Agreement) (PDF). If you're working on checkmate as an individual, this is the form you should use.
-    * [https://github.com/quantifiedcode/checkmate/raw/master/ecla.pdf](Entity Contributor License Agreement) (PDF). If you're working on checkmate as part of your job, you and your employer will need to download and sign this form.
+    * [Individual Contributor License Agreement (PDF)](https://github.com/quantifiedcode/checkmate/raw/master/icla.pdf): If you're working on checkmate as an individual, this is the form you should use.
+    * [Entity Contributor License Agreement (PDF)](https://github.com/quantifiedcode/checkmate/raw/master/ecla.pdf): If you're working on checkmate as part of your job, you and your employer will need to download and sign this form.
 
 2. Print out the CLA and sign it.
 
