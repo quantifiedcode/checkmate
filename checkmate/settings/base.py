@@ -123,7 +123,7 @@ def load_plugins(abort_on_error = False,verbose = True):
         try:
             module = importlib.import_module(module_name+'.setup')
             load_plugin(module,name)
-        except ImportError:
+        except:
             logger.error("Cannot import plugins %s (module %s)" % (name,module_name))
             if verbose:
                 sys.stderr.write(traceback.format_exc())

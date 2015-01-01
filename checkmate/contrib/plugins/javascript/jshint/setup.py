@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from .analyzer import JSHintAnalyzer
 from .error_data import error_data
 
-analyzers = [
-    {
-        'name' : 'jshint',
-        'title' : 'JSHint',
-        'class' : JSHintAnalyzer,
-        'language' : 'javascript',
-        'error_data' : error_data,
-    },
-]
+analyzers = {
+    'jshint' :
+        {
+            'title' : 'JSHint',
+            'class' : JSHintAnalyzer,
+            'language' : 'javascript',
+            'error_data' : error_data,
+        },
+}
