@@ -17,3 +17,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import tempfile
+import pytest
+import subprocess
+
+TEST_DIRECTORY = os.path.abspath(__file__+"/../")
+
+DATA_DIRECTORY = os.path.join(TEST_DIRECTORY,"data")
+
+GIT_TEST_REPOSITORY = DATA_DIRECTORY + "/test_repository/d3py.tar.gz"
+
+@pytest.fixture(scope = "module")
+def test_repository_directory(request):
+
+    tmpdir = tempfile.mkdtemp()
+    print GIT_TEST_REPOSITORY
+    subprocess.call(["tar","-xzf",GIT_TEST_REPOSITORY],cwd = tmpdir)
+
+    def finalizer():
+        subprocess.call(["rm","-rf",tmpdir])
+
+    request.addfinalizer(finalizer)
+
+    return tmpdir

@@ -74,12 +74,11 @@ models = {
 }
 
 plugins = {
-#           'pep8' : 'checkmate.contrib.plugins.python.pep8',
+           'pep8' : 'checkmate.contrib.plugins.python.pep8',
            'pylint' : 'checkmate.contrib.plugins.python.pylint',
            'pyflakes' : 'checkmate.contrib.plugins.python.pyflakes',
-#           'jshint' : 'checkmate.contrib.plugins.javascript.jshint',
+           'jshint' : 'checkmate.contrib.plugins.javascript.jshint',
            'metrics' : 'checkmate.contrib.plugins.python.metrics',
-           'codetree' : 'checkmate_codetree',   
            'git' : 'checkmate.contrib.plugins.git',
            }
 

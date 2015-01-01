@@ -331,6 +331,8 @@ class Repository(object):
                     extra_args = ['-n','1',sha]
                     raw_log_output+=self.check_output(base_args+extra_args).decode('utf-8','ignore')
             else:
+                if branch is None:
+                    raise TypeError("Branch cannot be None!")
                 extra_args = [branch]
                 if from_to:
                     extra_args.extend([from_to[0]+".."+from_to[1]])

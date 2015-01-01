@@ -17,3 +17,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import pytest
+
+from ..models import GitProject
+
+from . import test_repository_directory
+
+@pytest.fixture(scope = "function")
+def project(request,test_repository_directory):
+    return GitProject({'path' : test_repository_directory})
+
+def test_snapshots(project):
+    snapshots = project.get_git_snapshots(branch = "master")
+
+    assert len(snapshots) == 157
+
+    assert snapshots[0].project == project
+
+def test_file_revisions(project):
+    snapshot = project.get_git_snapshots(branch = "master")[-1]
+    file_revisions = snapshot.get_git_file_revisions()
+    assert len(file_revisions) == 38
+    assert 'd3py/HTTPHandler.py' in [f.path for f in file_revisions]
+
