@@ -3,7 +3,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(name='checkmate',
-version='0.0.1',
+version='0.0.2',
 author=u'Andreas Dewes - QuantifiedCode UG (haftungsbeschränkt)',
 author_email = 'andreas@quantifiedcode.com',
 license = 'Affero GPL (AGPL)',
