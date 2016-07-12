@@ -1,7 +1,7 @@
 #Welcome to Checkmate!
 
 [![Build Status](https://travis-ci.org/quantifiedcode/checkmate.svg?branch=master)](https://travis-ci.org/quantifiedcode/checkmate)
-[![PyPI](https://img.shields.io/pypi/v/nine.svg?maxAge=2592000)](https://pypi.python.org/pypi/checkmate)
+[![PyPI](https://img.shields.io/pypi/v/checkmate.svg?maxAge=100)](https://pypi.python.org/pypi/checkmate)
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/gh:quantifiedcode:checkmate/badge.svg)](https://www.quantifiedcode.com/app/project/gh:quantifiedcode:checkmate)
 
 ##About
