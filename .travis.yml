@@ -1,5 +1,6 @@
 language: python
 sudo: false
+dist: trusty
 before_script:
   - sleep 10
 python:

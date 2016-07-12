@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from blitzdb import Document
+from blitzdb import Document, SqlBackend
 from blitzdb.fields import (BooleanField,
                             CharField,
                             DateTimeField,
@@ -24,7 +24,20 @@ from checkmate.lib.stats.helpers import directory_splitter
 from checkmate.lib.analysis import AnalyzerSettingsError
 from checkmate.helpers.issue import IssuesMapReducer
 
-from sqlalchemy.sql import select,insert,update,func,and_,or_,not_,expression,null,distinct,exists
+try:
+    from sqlalchemy.sql import (select,
+                                insert,
+                                update,
+                                func,
+                                and_,
+                                or_,
+                                not_,
+                                expression,
+                                null,
+                                distinct,
+                                exists)
+except ImportError:
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -138,11 +151,16 @@ class Diff(BaseDocument):
     snapshot_b = ForeignKeyField('Snapshot',backref = 'diffs_b')
 
     def get_issues_count(self, by_severity=False):
-        diff_issue_occurrence_table = self.issue_occurrences.as_table()
+        if isinstance(self.backend, SqlBackend):
+            return self._get_issues_count_sql(by_severity=by_severity)
+        raise NotImplementedError
 
-        issue_class_table = self.backend.filter(self.project.IssueClass,{'project_issue_classes.project' : self.project,
-                                                                         'project_issue_classes.enabled' : True},
-                                                only = ['analyzer','code','severity']).as_table()
+    def _get_issues_count_sql(self, by_severity=False):
+
+        diff_issue_occurrence_table = self.backend.get_table(DiffIssueOccurrence)
+
+        issue_class_table = self.backend.get_table(self.project.IssueClass)
+        project_issue_class_table = self.backend.get_table(ProjectIssueClass)
         issue_occurrence_table = self.backend.get_table(IssueOccurrence)
         issue_table = self.backend.get_table(Issue)
 
@@ -151,7 +169,13 @@ class Diff(BaseDocument):
             .join(issue_occurrence_table,diff_issue_occurrence_table.c.issue_occurrence == issue_occurrence_table.c.pk)\
             .join(issue_table)\
             .join(issue_class_table,and_(issue_table.c.analyzer == issue_class_table.c.analyzer,
-                                         issue_table.c.code == issue_class_table.c.code)))\
+                                         issue_table.c.code == issue_class_table.c.code))\
+            .join(project_issue_class_table,and_(
+                project_issue_class_table.c.issue_class == issue_class_table.c.pk,
+                project_issue_class_table.c.enabled == True,
+                project_issue_class_table.c.project == self.project.pk
+                )))\
+            .where(diff_issue_occurrence_table.c.diff == self.pk)\
             .group_by(diff_issue_occurrence_table.c.key,issue_class_table.c.severity)
 
 
@@ -170,9 +194,9 @@ class Diff(BaseDocument):
                 counts[row['key']] += row['count']
         return counts
 
-    def summarize_issues(self,include_filename = False):
+    def _summarize_issues_sql(self, include_filename=False):
 
-        diff_issue_occurrence_table = self.issue_occurrences.as_table()
+        diff_issue_occurrence_table = self.backend.get_table(DiffIssueOccurrence)
         issue_occurrence_table = self.backend.get_table(IssueOccurrence)
         issue_table = self.backend.get_table(Issue)
         file_revision_table = self.backend.get_table(FileRevision)
@@ -209,7 +233,7 @@ class Diff(BaseDocument):
         #we select the aggregated issues for all file revisions in this snapshot
         s = select(group_columns+[func.count().label('count')])\
         .select_from(table)\
-        .where(exists(subselect))\
+        .where(and_(exists(subselect),diff_issue_occurrence_table.c.diff == self.pk))\
         .group_by(*group_columns)\
         .order_by(file_revision_table.c.path)
 
@@ -235,6 +259,11 @@ class Diff(BaseDocument):
 
         return {'added': map_reducer.mapreduce(added_issues),
                 'fixed': map_reducer.mapreduce(fixed_issues)}
+
+    def summarize_issues(self,include_filename = False):
+        if isinstance(self.backend,SqlBackend):
+            return self._summarize_issues_sql(include_filename=include_filename)
+        raise NotImplementedError
 
 class DiffIssueOccurrence(BaseDocument):
 
@@ -289,8 +318,12 @@ class Snapshot(BaseDocument):
         Exports a snapshot to a data structure
         """
 
+    def summarize_issues(self, include_filename=False):
+        if isinstance(self.backend, SqlBackend):
+            return self._summarize_issues_sql(include_filename=include_filename)
+        raise NotImplementedError
 
-    def summarize_issues(self,include_filename = False):
+    def _summarize_issues_sql(self,include_filename = False):
 
         snapshot_file_revisions_table = self.backend.get_table(self.fields['file_revisions'].relationship_class)
         fr_table = self.backend.get_table(FileRevision)

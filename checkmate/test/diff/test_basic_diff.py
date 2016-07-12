@@ -16,7 +16,7 @@ class TestDiffing(ProjectBasedTest):
 
     def test_simple_diff(self):
         snapshot_1 = Snapshot({'project' : self.project, 'hash' : 'snapshot_1'})
-        file_revision_1 = FileRevision({'path' : 'foo.py','hash' : '1:foo.py'})
+        file_revision_1 = FileRevision({'path' : 'foo.py','hash' : '1:foo.py', 'language' : 'python'})
 
         issue_class_1 = IssueClass({'code' : 'wildcard','analyzer' : 'example','severity' : 2})
         project_issue_class_1 = ProjectIssueClass({'project' : self.project,
@@ -40,7 +40,7 @@ class TestDiffing(ProjectBasedTest):
             self.backend.commit()
 
         snapshot_2 = Snapshot({'project' : self.project, 'hash' : 'snapshot_2'})
-        file_revision_2 = FileRevision({'path' : 'bar.py','hash' : '2:bar.py'})
+        file_revision_2 = FileRevision({'path' : 'bar.py','hash' : '2:bar.py','language':'python'})
         snapshot_2.file_revisions = [file_revision_1,file_revision_2]
         issue_class_2 = IssueClass({'code' : 'format','analyzer' : 'example','severity' : 1})
         project_issue_class_2 = ProjectIssueClass({'project' : self.project,
@@ -76,7 +76,7 @@ class TestDiffing(ProjectBasedTest):
         assert diff_issue_occurrences[0].issue_occurrence == issue_2_occurrence
 
         snapshot_3 = Snapshot({'project' : self.project, 'hash' : 'snapshot_3'})
-        file_revision_3 = FileRevision({'path' : 'bar.py','hash' : '3:bar.py'})
+        file_revision_3 = FileRevision({'path' : 'bar.py','hash' : '3:bar.py','language' : 'python'})
         snapshot_3.file_revisions = [file_revision_1,file_revision_3]
         issue_2_occurrence_2 = IssueOccurrence({'issue' : issue_2,
                                               'file_revision' : file_revision_3,
@@ -110,3 +110,13 @@ class TestDiffing(ProjectBasedTest):
 
         assert issues_count['added'] == 1
         assert issues_count['fixed'] == 0
+
+        summarized_issues = diff.summarize_issues()
+
+        assert 'added' in summarized_issues
+        assert '' in summarized_issues['added']
+        assert 'python' in summarized_issues['added']['']
+        assert 'example' in summarized_issues['added']['']['python']
+        assert 'format' in summarized_issues['added']['']['python']['example']
+        assert summarized_issues['added']['']['python']['example']['format'] == [1,1] 
+        assert 'fixed' in summarized_issues and not summarized_issues['fixed']

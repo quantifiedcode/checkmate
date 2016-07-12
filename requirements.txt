@@ -1,5 +1,6 @@
 pylint
 pyflakes
+chardet
 pep8
 six
 cffi
