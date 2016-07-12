@@ -1,9 +1,8 @@
 #Welcome to Checkmate!
 
 [![Build Status](https://travis-ci.org/quantifiedcode/checkmate.svg?branch=master)](https://travis-ci.org/quantifiedcode/checkmate)
-[![PyPi version](https://pypip.in/v/checkmate/badge.png)](https://pypi.python.org/pypi/checkmate)
-[![PyPi downloads](https://pypip.in/d/checkmate/badge.png)](https://pypi.python.org/pypi/checkmate)
-[![Code Issues](http://www.quantifiedcode.com/project/gh:quantifiedcode:checkmate/badge.svg)](http://www.quantifiedcode.com/app#/project/gh:quantifiedcode:checkmate)
+[![PyPI](https://img.shields.io/pypi/v/nine.svg?maxAge=2592000)](https://pypi.python.org/pypi/checkmate)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/gh:quantifiedcode:checkmate/badge.svg)](https://www.quantifiedcode.com/app/project/gh:quantifiedcode:checkmate)
 
 ##About
 Checkmate is a cross-language (meta-)tool for static code analysis, written in Python. Unlike other tools, it provides a global overview of the code quality in a project and aims to provide clear, actionable insights to the user.

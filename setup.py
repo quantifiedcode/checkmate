@@ -3,7 +3,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(name='checkmate',
-version='0.1.0',
+version='0.2.0',
 author=u'Andreas Dewes - QuantifiedCode UG (haftungsbeschränkt)',
 author_email = 'andreas@quantifiedcode.com',
 license = 'MIT',
@@ -12,6 +12,7 @@ pylint
 pyflakes
 pep8
 six
+chardet
 blitzdb
 pyyaml
 sqlalchemy
@@ -43,7 +44,6 @@ The source code can be found on `Github <https://github.com/quantifiedcode/check
 Changelog
 =========
 
-* 0.0.2: Added dependencies information, fixed broken JSHint plugin.
-* 0.0.2: Initial release.
+* 0.2.0: Beta-release
 """
 )
