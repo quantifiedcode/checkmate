@@ -8,7 +8,6 @@ import os
 import importlib
 import yaml
 
-from collections import defaultdict
 from . import defaults
 
 logger = logging.getLogger(__name__)
