@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def initialize_project(settings, project):
+def initialize_project(project):
     project.properties['git'] = Git(project)
 
 def before_project_save(settings, project):

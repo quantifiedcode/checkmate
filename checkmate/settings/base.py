@@ -8,12 +8,17 @@ import os
 import importlib
 import yaml
 
+from collections import defaultdict
 from . import defaults
 
 logger = logging.getLogger(__name__)
 project_path = os.path.dirname(os.path.dirname(__file__))
 
 from collections import defaultdict
+
+#these are global hooks
+hooks = defaultdict(list)
+hooks_by_plugin = defaultdict(lambda :defaultdict(list))
 
 class Settings(object):
 
@@ -47,7 +52,6 @@ class Settings(object):
         self.plugins = plugins if plugins is not None else defaults.plugins.copy()
         self.language_patterns = language_patterns if language_patterns is not None else defaults.language_patterns.copy()
         self.hooks = hooks if hooks is not None else defaults.hooks.copy()
-
 
     def update(self, settings):
         if settings is None:
@@ -84,6 +88,11 @@ class Settings(object):
         if hasattr(module,'hooks'):
             for key,value in module.hooks.items():
                 self.hooks[key].append(value)
+        if hasattr(module,'global_hooks'):
+            for key,value in module.global_hooks.items():
+                hooks[key].append(value)
+                #we add them to hooks_by_plugins so that we can potentially unload them...
+                hooks_by_plugin[name][key].append(value)
         if hasattr(module,'models'):
             self.models.update(module.models)
         if hasattr(module,'top_level_commands'):

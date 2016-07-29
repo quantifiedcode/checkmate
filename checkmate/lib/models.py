@@ -398,6 +398,11 @@ class Project(BaseDocument):
     class Meta(Document.Meta):
         collection = "project"
 
+    def initialize(self):
+        from checkmate.settings import hooks
+        for hook in hooks['project.initialize']:
+            hook(self)
+
     def validate_settings(self,settings):
 
         errors = {}

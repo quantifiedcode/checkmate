@@ -127,8 +127,6 @@ def get_project(project_path,project_config,settings,backend):
 
     project.path = project_path
 
-    settings.call_hooks('project.initialize', project)
-
     with backend.transaction():
         backend.save(project)
 
