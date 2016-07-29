@@ -2,11 +2,14 @@ from unittest import TestCase
 
 from checkmate.management.commands.init import Command as InitCommand
 from checkmate.management.helpers import get_project_and_backend
-from checkmate.settings import Settings
+from checkmate.settings import Settings, load_plugins
 
 import tempfile
 import shutil
 import os
+
+#we make sure all plugins are loaded
+load_plugins()
 
 class ProjectBasedTest(TestCase):
 
@@ -19,13 +22,9 @@ class ProjectBasedTest(TestCase):
         self.settings = Settings(
             analyzers = {},
             aggregators = {},
-            commands = {},
-            plugins = {
-                'git' : 'checkmate.contrib.plugins.git'
-            }
+            commands = {}
         )
 
-        self.settings.load_plugins()
         self.current_path = os.getcwd()
 
         os.chdir(self.tmp_project_path)

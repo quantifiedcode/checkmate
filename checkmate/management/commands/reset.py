@@ -20,6 +20,8 @@ from checkmate.lib.models import (Snapshot,
                                   DiffIssueOccurrence,
                                   DiffFileRevision)
 
+from checkmate.settings import call_hooks
+
 class Command(BaseCommand):
 
     def run(self):
@@ -29,7 +31,7 @@ class Command(BaseCommand):
         backend = self.backend
         project = self.project
         with backend.transaction():
-            self.settings.call_hooks('project.reset.before',self.project)
+            call_hooks('project.reset.before',self.project)
             diffs = self.backend.filter(Diff,{'$or' : [{'project' : self.project},
                                                        {'project' : {'$exists' : False}}]})
             file_revisions = self.backend.filter(FileRevision,{'project' : self.project})
@@ -45,5 +47,5 @@ class Command(BaseCommand):
             logger.info("Deleting %d snapshots" % (len(snapshots)))
             snapshots.delete()
 
-            self.settings.call_hooks('project.reset.after',self.project)
+            call_hooks('project.reset.after',self.project)
         print "Done"

@@ -17,11 +17,8 @@ models = {
 
 from .hooks.project import initialize_project,before_project_save,before_project_reset
 
-global_hooks = {
-    'project.initialize' : initialize_project
-}
-
 hooks = {
+    'project.initialize' : initialize_project,
     'project.save.before' : before_project_save,
     'project.reset.before' : before_project_reset
 }

@@ -47,7 +47,7 @@ from checkmate.management.helpers import (get_project_path,
                                           get_backend,
                                           get_project_config)
 
-from checkmate.settings import Settings
+from checkmate.settings import Settings, load_plugins
 
 def load_command_class(settings):
     i = 1
@@ -73,6 +73,8 @@ def load_command_class(settings):
         current_commands = current_commands[cmd]
 
 def main():
+
+    load_plugins()
 
     project_path = get_project_path()
 

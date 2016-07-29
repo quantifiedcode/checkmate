@@ -6,7 +6,7 @@ from checkmate.contrib.plugins.git.commands.analyze import Command as AnalyzeCom
 from checkmate.contrib.plugins.git.models import GitSnapshot, GitBranch
 from checkmate.lib.models import Issue, IssueOccurrence
 from checkmate.lib.analysis import BaseAnalyzer
-from checkmate.settings import Settings
+from checkmate.settings import Settings, defaults, load_plugins
 from checkmate.management.helpers import get_project_and_backend
 
 import tempfile
@@ -18,6 +18,9 @@ import logging
 import traceback
 
 logger = logging.getLogger(__name__)
+
+defaults.plugins['git'] = 'checkmate.contrib.plugins.git'
+load_plugins()
 
 class ExampleAnalyzer(BaseAnalyzer):
 
@@ -46,7 +49,6 @@ class RepositoryBasedTest(TestCase):
                         cwd = self.tmpdir)
 
         self.current_path = os.getcwd()
-
         self.settings = Settings(
             analyzers = {
                 'test':
@@ -60,12 +62,7 @@ class RepositoryBasedTest(TestCase):
             aggregators = {},
             models = None,
             commands = {},
-            plugins = {
-                'git' : 'checkmate.contrib.plugins.git'
-            }
         )
-
-        self.settings.load_plugins()
 
         os.chdir(self.tmp_project_path)
         init_command = InitCommand(project=None,settings=self.settings)

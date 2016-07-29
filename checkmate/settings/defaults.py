@@ -9,9 +9,14 @@ from checkmate.lib.models import (Project,
 Default settings values
 """
 
-from collections import defaultdict
-
-hooks = defaultdict(list)
+plugins = {
+           'pep8' : 'checkmate.contrib.plugins.python.pep8',
+           'pylint' : 'checkmate.contrib.plugins.python.pylint',
+           'pyflakes' : 'checkmate.contrib.plugins.python.pyflakes',
+           'jshint' : 'checkmate.contrib.plugins.javascript.jshint',
+           'metrics' : 'checkmate.contrib.plugins.python.metrics',
+           'git' : 'checkmate.contrib.plugins.git'
+           }
 
 language_patterns = { 'python':
                         {
@@ -57,15 +62,6 @@ models = {
     'FileRevision' : FileRevision,
     'Issue' : Issue,
 }
-
-plugins = {
-           'pep8' : 'checkmate.contrib.plugins.python.pep8',
-           'pylint' : 'checkmate.contrib.plugins.python.pylint',
-           'pyflakes' : 'checkmate.contrib.plugins.python.pyflakes',
-           'jshint' : 'checkmate.contrib.plugins.javascript.jshint',
-           'metrics' : 'checkmate.contrib.plugins.python.metrics',
-           'git' : 'checkmate.contrib.plugins.git'
-           }
 
 aggregators = {
     'directory' :

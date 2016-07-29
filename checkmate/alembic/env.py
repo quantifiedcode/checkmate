@@ -5,8 +5,6 @@ from logging.config import fileConfig
 
 from blitzdb.backends.sql import Backend as SqlBackend
 from checkmate.management.helpers import get_project_config,get_backend,get_project_path
-import checkmate.settings as settings
-
 
 config = context.config
 fileConfig(config.config_file_name)
@@ -23,9 +21,6 @@ def run_migrations_offline():
     script output.
 
     """
-
-    settings.update_config(settings.load_config())
-    settings.load_plugins()
 
     project_path = get_project_path()
     project_config = get_project_config(project_path)
@@ -50,15 +45,10 @@ def run_migrations_online():
     """
     print "Running migrations online"
 
-    settings.update_config(settings.load_config())
     project_path = get_project_path()
     project_config = get_project_config(project_path)
 
-    settings.load_plugins()
-
     backend = get_backend(project_path,project_config,initialize_db = False)
-
-    print backend.metadata,"<<<"
 
     context.configure(
         connection=backend.connection,
