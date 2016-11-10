@@ -3,7 +3,9 @@ from checkmate.lib.stats.mapreduce import MapReducer
 
 class IssuesMapReducer(MapReducer):
 
-    def __init__(self,aggregators,count_column = 'count',group_by = ['language','analyzer','code']):
+    def __init__(self,aggregators,count_column = 'count',group_by = None):
+        if group_by is None:
+            group_by = ['language','analyzer','code']
         self.aggregators = aggregators
         self.count_column = count_column
         self.group_by = group_by

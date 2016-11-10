@@ -32,10 +32,12 @@ class Hasher(object):
         return self.digest
 
 
-def get_hash(node,fields = None,exclude = ['pk','_id'],target = 'pk'):
+def get_hash(node,fields = None,exclude = None,target = 'pk'):
     """
     Here we generate a unique hash for a given node in the syntax tree.
     """
+    if exclude is None:
+        exclude = ['pk','_id']
 
     hasher = Hasher()
 

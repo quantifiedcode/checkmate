@@ -545,8 +545,12 @@ class Project(BaseDocument):
 
 class DiskRepository(object):
 
-    def get_disk_file_revisions(self,file_filters = [],path_filters = []):
+    def get_disk_file_revisions(self,file_filters = None,path_filters = None):
 
+        if file_filters is None:
+            file_filters = []
+        if path_filters is None:
+            path_filters = []
         all_filenames = []
 
         def apply_filters(filenames_or_paths,filters):
