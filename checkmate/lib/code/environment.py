@@ -230,9 +230,11 @@ class CodeEnvironment(object):
                                                                            self.global_settings.language_patterns)
 
         filters = [analyzer_filter]
-
+        print "..."
+        print self.project_settings
         if 'ignore' in self.project_settings:
             checkignore = self.project_settings['ignore']
+            print checkignore
             filters.append(lambda filenames : filter_filenames_by_checkignore(filenames,checkignore))
 
         file_revisions_by_path = {fr.path : fr for fr in file_revisions}
@@ -290,7 +292,7 @@ class CodeEnvironment(object):
                                       )
         except:
             logger.error("Cannot initialize analyzer {}".format(name))
-            logger.debug(traceback.format_exc())
+            logger.error(traceback.format_exc())
             analyzer = None
         self._analyzer_cache[class_str] = analyzer
         return analyzer

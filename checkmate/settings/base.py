@@ -40,7 +40,7 @@ def load_plugin(module,name = None):
     if hasattr(module,'top_level_commands'):
         defaults.commands.update(module.top_level_commands)
 
-def load_plugins(plugins=None, abort_on_error = False,verbose = False):
+def load_plugins(plugins=None, abort_on_error = False,verbose=True):
     if plugins is None:
         plugins = defaults.plugins
     for name,module_name in plugins.items():
@@ -53,6 +53,15 @@ def load_plugins(plugins=None, abort_on_error = False,verbose = False):
                 logger.error(traceback.format_exc())
             if abort_on_error:
                 raise
+
+def update_recursively(d, ud):
+    for key, value in ud.items():
+        if key not in d:
+            d[key] = value
+        elif isinstance(value,dict):
+            update_recursively(d[key], value)
+        else:
+            d[key] = value
 
 class Settings(object):
 
@@ -78,6 +87,7 @@ class Settings(object):
                  plugins=None,
                  models=None,
                  language_patterns=None):
+
         self.commands = commands if commands is not None else defaults.commands.copy()
         self.analyzers = analyzers if analyzers is not None else defaults.analyzers.copy()
         self.aggregators = aggregators if aggregators is not None else defaults.aggregators.copy()
@@ -87,9 +97,14 @@ class Settings(object):
     def update(self, settings):
         if settings is None:
             return
-        for key in ('plugins','analyzers','aggregators','language_patterns','commands','models'):
+        for key in ('plugins',
+                    'analyzers',
+                    'aggregators',
+                    'language_patterns',
+                    'commands',
+                    'models'):
             if key in settings:
-                getattr(self,key).update(settings[key])
+                update_recursively(getattr(self,key), settings[key])
 
     def load(self, project_path=None):
         home = os.path.expanduser('~')

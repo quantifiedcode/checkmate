@@ -15,13 +15,13 @@ issues_data = {
     },
     "C0321" : {
         "title" : "more than one statement per line",
-        "description" : "",
+        "description" : "%(occurrence.data.description)",
         "categories" : ["maintainability","readability"],
         "severity" : 3
     },
     "R0201" : {
         "title" : "method could be a function",
-        "description" : "",
+        "description" : "%(occurrence.data.description)",
         "categories" : ["maintainability"],
         "severity" : 4
     },

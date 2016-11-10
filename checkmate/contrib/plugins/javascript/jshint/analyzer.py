@@ -5,12 +5,23 @@ from __future__ import absolute_import
 
 from checkmate.lib.analysis.base import BaseAnalyzer
 
+import logging
 import os
 import tempfile
 import json
 import subprocess
 
+logger = logging.getLogger(__name__)
+
 class JSHintAnalyzer(BaseAnalyzer):
+
+    def __init__(self, *args, **kwargs):
+        super(JSHintAnalyzer, self).__init__(*args, **kwargs)
+        try:
+            result = subprocess.check_output(["jshint","--version"])
+        except subprocess.CalledProcessError:
+            logger.error("Cannot initialize JSHint analyzer: Executable is missing, please install it.")
+            raise
 
     def summarize(self,items):
         pass

@@ -10,3 +10,7 @@ class Command(BaseCommand):
             raise AttributeError("No project defined!")
         if not hasattr(self.project,'git'):
             raise AttributeError("Not a git project!")
+        try:
+            self.project.git.eager
+        except self.project.git.DoesNotExist:
+            raise AttributeError("Repository not found!")

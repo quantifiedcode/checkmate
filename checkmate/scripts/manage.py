@@ -80,7 +80,7 @@ def main():
 
     settings = Settings()
     settings.update(settings.load(project_path=project_path))
-    settings.load_plugins()
+    #settings.load_plugins()
 
     if project_path:
         project_config = get_project_config(project_path)

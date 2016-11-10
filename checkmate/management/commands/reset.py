@@ -31,7 +31,7 @@ class Command(BaseCommand):
         backend = self.backend
         project = self.project
         with backend.transaction():
-            call_hooks('project.reset.before',self.project)
+            call_hooks('project.reset.before',self.settings, self.project)
             diffs = self.backend.filter(Diff,{'$or' : [{'project' : self.project},
                                                        {'project' : {'$exists' : False}}]})
             file_revisions = self.backend.filter(FileRevision,{'project' : self.project})
@@ -47,5 +47,5 @@ class Command(BaseCommand):
             logger.info("Deleting %d snapshots" % (len(snapshots)))
             snapshots.delete()
 
-            call_hooks('project.reset.after',self.project)
+            call_hooks('project.reset.after', self.settings, self.project)
         print "Done"
