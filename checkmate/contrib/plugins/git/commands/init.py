@@ -38,12 +38,15 @@ class Command(BaseCommand):
     def run(self):
 
         project_path = self.opts['path'] or os.getcwd()
-        git_path = self.find_git_repository(project_path)
+
+        if opts.get('git_path'):
+            git_path = opts['git_path']
+        else:
+            git_path = self.find_git_repository(project_path)
+
         if git_path is None:
             logger.error("No git project found!")
             return -1
-
-        super(Command, self).run()
 
         project_config = get_project_config(project_path)
         backend = get_backend(project_path, project_config, self.settings)

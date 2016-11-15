@@ -30,12 +30,17 @@ from checkmate.helpers.hashing import Hasher
 
 class GitRepository(BaseDocument):
 
-    path = CharField(indexed=True)
+    path_ = CharField(indexed=True)
     project = ForeignKeyField('Project', backref = 'git', unique=True)
-    remote_url = CharField(indexed=True)
-    private_ssh_key = TextField()
-    public_ssh_key = TextField()
     default_branch = CharField(indexed=True)
+
+    @property
+    def path(self):
+        return self.path_
+
+    @path.setter
+    def path(self, path):
+        self.path_ = path
 
     def get_settings(self):
         default_branch = self.get_default_branch()
@@ -98,7 +103,7 @@ class GitRepository(BaseDocument):
             file_revision.project = self.project
             file_revision.hash = hasher.digest.hexdigest()
             file_revision.pk = uuid.uuid4().hex
-            file_revision._file_content = lambda commit_sha = commit_sha,file_revision = file_revision: self.repository.get_file_content(commit_sha,file_revision.path)
+            file_revision._file_content = lambda commit_sha = commit_sha, file_revision = file_revision: self.repository.get_file_content(commit_sha,file_revision.path)
             file_revisions.append(file_revision)
         return file_revisions
 
