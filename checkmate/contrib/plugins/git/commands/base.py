@@ -1,5 +1,4 @@
 from checkmate.management.commands.base import BaseCommand
-from ..helpers import Git
 from sqlalchemy.orm.exc import NoResultFound
 
 class Command(BaseCommand):

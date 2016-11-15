@@ -1,11 +1,7 @@
-from ..helpers import Git
 from ..models import GitSnapshot,GitBranch
 import logging
 
 logger = logging.getLogger(__name__)
-
-def initialize_project(project):
-    project.properties['git'] = Git(project)
 
 def before_project_save(settings, project):
     pass

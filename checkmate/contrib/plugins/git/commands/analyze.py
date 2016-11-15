@@ -5,7 +5,6 @@ from checkmate.management.commands.analyze import Command as AnalyzeCommand
 from .base import Command as BaseCommand
 from ..lib.repository import group_snapshots_by_date,get_first_date_for_group
 from ..models import GitBranch,GitSnapshot
-from ..helpers import Git
 from checkmate.lib.models import Diff, Snapshot
 from checkmate.helpers.hashing import Hasher
 from checkmate.helpers.settings import update

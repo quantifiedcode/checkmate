@@ -4,7 +4,7 @@ from .commands.update_stats import Command as UpdateStatsCommand
 from .commands.init import Command as InitCommand
 
 from .models import GitSnapshot, GitBranch, GitRepository
-from .hooks.project import initialize_project,before_project_save,before_project_reset
+from .hooks.project import before_project_save,before_project_reset
 
 commands = {
     'init' : InitCommand,
