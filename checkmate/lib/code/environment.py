@@ -225,13 +225,13 @@ class CodeEnvironment(object):
         return None
 
     def filter_file_revisions(self,file_revisions):
+
         analyzer_filter = lambda filenames : filter_filenames_by_analyzers(filenames,
                                                                            self.global_settings.analyzers.values(),
                                                                            self.global_settings.language_patterns)
 
         filters = [analyzer_filter]
-        print "..."
-        print self.project_settings
+
         if 'ignore' in self.project_settings:
             checkignore = self.project_settings['ignore']
             print checkignore
@@ -604,17 +604,6 @@ class CodeEnvironment(object):
 
         if len(file_revisions) > max_file_revisions:
 
-            if not 'snapshot_issues' in snapshot:
-                snapshot.snapshot_issues = []
-
-            snapshot.snapshot_issues.append({
-                    'code' : 'TooManyFileRevisions',
-                    'data' : {
-                            'count' : len(file_revisions),
-                            'limit' : max_file_revisions
-                        }
-                    })
-
             logger.warning("Too many file revisions (%d) in snapshot, truncating at %d" %
                          (len(file_revisions),max_file_revisions))
             file_revisions_by_pk = dict(sorted(file_revisions_by_pk.items(),
@@ -623,12 +612,10 @@ class CodeEnvironment(object):
 
         i = 0
         chunk_size = 50
-
         existing_file_revisions = []
-
         file_revisions_by_pk_keys = file_revisions_by_pk.keys()
 
-        #we only check 50 keys at a time to not overload the database...
+        #we only check 50 keys at a time and then incrementally save them
         while i < len(file_revisions_by_pk_keys):
             file_revisions_by_pk_chunk = file_revisions_by_pk_keys[i:i+chunk_size]
             if not file_revisions_by_pk_chunk:

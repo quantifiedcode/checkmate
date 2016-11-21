@@ -63,6 +63,12 @@ class IssueCategory(BaseDocument):
 
 class IssueClass(BaseDocument):
 
+    class Severity:
+        critical = 1
+        potential_bug = 2
+        minor = 3
+        recommendation = 4
+
     hash = CharField(indexed = True,length = 64)
     title = CharField(indexed = True,length = 100)
     analyzer = CharField(indexed = True,length = 50)
@@ -113,6 +119,8 @@ class Issue(BaseDocument):
         dbref_includes = ['code','analyzer']
 
 class MockFileRevision(BaseDocument):
+
+    __abstract__ = True
 
     def get_file_content(self):
         return self.code
@@ -352,8 +360,8 @@ class Snapshot(BaseDocument):
                 project_issue_class_table.c.project == expression.cast(self.project.pk,project_pk_type),
                 project_issue_class_table.c.enabled == True))\
 
-        file_revisions_select = select([snapshot_file_revisions_table.c.pk_filerevision])\
-                                .where(snapshot_file_revisions_table.c.pk_snapshot == expression.cast(self.pk,snapshot_pk_type))
+        file_revisions_select = select([snapshot_file_revisions_table.c.filerevision])\
+                                .where(snapshot_file_revisions_table.c.snapshot == expression.cast(self.pk,snapshot_pk_type))
 
         #we select the aggregated issues for all file revisions in this snapshot
         s = select(group_columns+[func.count().label('count')])\
@@ -542,69 +550,3 @@ class Project(BaseDocument):
                 code_data[issue_class['code']][field_name] = issue_class[field_name]
 
         return grouped_issue_data
-
-class DiskRepository(object):
-
-    def get_disk_file_revisions(self,file_filters = [],path_filters = []):
-
-        all_filenames = []
-
-        def apply_filters(filenames_or_paths,filters):
-            filtered_filenames_or_paths = filenames_or_paths[:]
-            for filter_function in filters:
-                filtered_filenames_or_paths = filter_function(filtered_filenames_or_paths)
-            return filtered_filenames_or_paths
-
-        def check_directory(path):
-            filenames = os.listdir(path)
-            base_path = os.path.commonprefix([path,self.path])
-            rel_filenames = [os.path.relpath(os.path.join(path,filename),self.path)
-                             for filename in filenames]
-
-            filenames_to_add = []
-            paths_to_explore = []
-
-            for rel_path in rel_filenames:
-                full_path = os.path.join(base_path,rel_path)
-                if os.path.isfile(full_path):
-                    filenames_to_add.append(rel_path)
-                elif os.path.isdir(full_path):
-                    paths_to_explore.append(rel_path)
-
-            all_filenames.extend(apply_filters(filenames_to_add,file_filters))
-            paths_to_explore = apply_filters(paths_to_explore,path_filters)
-
-            for path in paths_to_explore:
-                check_directory(os.path.join(base_path,path))
-
-        check_directory(self.path)
-
-        file_revisions = []
-        for filename in all_filenames:
-            file_revision = FileRevision()
-            file_path = os.path.join(self.path,filename)
-            try:
-                file_revision.file_stats = dict(zip(('mode',
-                                                     'inode',
-                                                     'device',
-                                                     'nlink',
-                                                     'uid',
-                                                     'gid',
-                                                     'size',
-                                                     'atime',
-                                                     'mtime',
-                                                     'ctime')
-                                                    ,os.stat(file_path)))
-            except:
-                logger.warning("Cannot stat %s, skipping..." % file_path)
-                continue
-            file_revision.path = filename.decode("utf-8")
-            hasher = Hasher()
-            hasher.add(file_revision.path)
-            hasher.add(file_revision.file_stats['mtime'])
-            file_revision.hash = hasher.digest.hexdigest()
-            file_revision.pk = uuid.uuid4().hex
-            file_revision.project = self
-            file_revisions.append(file_revision)
-
-        return file_revisions
