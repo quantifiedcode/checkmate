@@ -200,6 +200,7 @@ class CodeEnvironment(object):
         #on the file revision information...
         self._active_analyzers = None
         self._active_aggregators = None
+        self._analyzer_cache = {}
 
     @property
     def env(self):
