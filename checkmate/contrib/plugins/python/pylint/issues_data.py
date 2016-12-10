@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 issues_data = {
     "C0202" : {
         "title" : "class method should have 'cls' as first argument",
-        "description" : "%(occurence.data.description)s",
+        "description" :"%(occurence.data.description)s",
         "categories" : ["maintainability","readability"],
         "severity" : 3
     },
