@@ -47,7 +47,7 @@ from checkmate.management.helpers import (get_project_path,
                                           get_backend,
                                           get_project_config)
 
-from checkmate.settings import Settings, load_plugins
+from checkmate.settings import Settings
 
 def load_command_class(settings):
     i = 1
@@ -74,13 +74,11 @@ def load_command_class(settings):
 
 def main():
 
-    load_plugins()
-
     project_path = get_project_path()
 
     settings = Settings()
     settings.update(settings.load(project_path=project_path))
-    #settings.load_plugins()
+    settings.initialize()
 
     if project_path:
         project_config = get_project_config(project_path)

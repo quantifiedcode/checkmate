@@ -5,9 +5,13 @@ from checkmate.lib.models import (Project,
                                   FileRevision,
                                   Issue)
 
+from collections import defaultdict
+
 """
 Default settings values
 """
+
+hooks = defaultdict(list)
 
 plugins = {
            'pep8' : 'checkmate.contrib.plugins.python.pep8',

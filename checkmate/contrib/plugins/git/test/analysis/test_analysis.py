@@ -1,4 +1,4 @@
-from . import RepositoryBasedTest
+from ..helpers import RepositoryBasedTest
 
 from checkmate.contrib.plugins.git.commands.analyze import Command as AnalyzeCommand
 from checkmate.contrib.plugins.git.models import GitSnapshot, GitBranch

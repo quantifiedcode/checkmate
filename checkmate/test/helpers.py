@@ -2,14 +2,12 @@ from unittest import TestCase
 
 from checkmate.management.commands.init import Command as InitCommand
 from checkmate.management.helpers import get_project_and_backend
-from checkmate.settings import Settings, load_plugins
+from checkmate.settings import Settings
 
 import tempfile
 import shutil
 import os
 
-#we make sure all plugins are loaded
-load_plugins()
 
 class ProjectBasedTest(TestCase):
 
@@ -24,6 +22,8 @@ class ProjectBasedTest(TestCase):
             aggregators = {},
             commands = {}
         )
+
+        self.settings.initialize()
 
         self.current_path = os.getcwd()
 

@@ -39,8 +39,8 @@ class Command(BaseCommand):
 
         project_path = self.opts['path'] or os.getcwd()
 
-        if opts.get('git_path'):
-            git_path = opts['git_path']
+        if self.opts.get('git_path'):
+            git_path = self.opts['git_path']
         else:
             git_path = self.find_git_repository(project_path)
 
@@ -48,14 +48,12 @@ class Command(BaseCommand):
             logger.error("No git project found!")
             return -1
 
-        project_config = get_project_config(project_path)
-        backend = get_backend(project_path, project_config, self.settings)
-        project = get_project(project_path, project_config, self.settings, backend)
+        try:
+            repo = self.backend.get(GitRepository,{'project' : self.project})
+        except GitRepository.DoesNotExist:
+            repo = GitRepository({'project' : self.project})
 
-        repo = GitRepository({
-            'project' : project,
-            'path' : project_path
-        })
+        repo.path = project_path
 
-        with backend.transaction():
-            backend.save(repo)
+        with self.backend.transaction():
+            self.backend.save(repo)

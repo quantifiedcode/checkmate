@@ -1,12 +1,12 @@
 from unittest import TestCase
 
 from checkmate.management.commands.init import Command as InitCommand
-
+from checkmate.contrib.plugins.git.commands.init import Command as GitInitCommand
 from checkmate.contrib.plugins.git.commands.analyze import Command as AnalyzeCommand
 from checkmate.contrib.plugins.git.models import GitSnapshot, GitBranch
 from checkmate.lib.models import Issue, IssueOccurrence
 from checkmate.lib.analysis import BaseAnalyzer
-from checkmate.settings import Settings, defaults, load_plugins
+from checkmate.settings import Settings
 from checkmate.management.helpers import get_project_and_backend
 
 import tempfile
@@ -18,9 +18,6 @@ import logging
 import traceback
 
 logger = logging.getLogger(__name__)
-
-defaults.plugins['git'] = 'checkmate.contrib.plugins.git'
-load_plugins()
 
 class ExampleAnalyzer(BaseAnalyzer):
 
@@ -62,14 +59,22 @@ class RepositoryBasedTest(TestCase):
             aggregators = {},
             models = None,
             commands = {},
+            plugins = {'git' : 'checkmate.contrib.plugins.git'}
         )
+
+        self.settings.initialize()
 
         os.chdir(self.tmp_project_path)
         init_command = InitCommand(project=None,settings=self.settings)
         init_command.run()
 
+
         assert os.path.exists(os.path.join(self.tmp_project_path,'.checkmate'))
         self.project,self.backend = get_project_and_backend(self.tmp_project_path, self.settings)
+
+        git_init_command = GitInitCommand(project=self.project, settings=self.settings, backend=self.backend)
+        git_init_command.run()
+
 
     def tearDown(self):
         os.chdir(self.current_path)
