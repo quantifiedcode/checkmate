@@ -268,7 +268,7 @@ issues_data = {
         },
     "E0501" : {
         "title" : "line too long",
-        "description" : "%(occurence.data.description)s",
+        "description" : "%(occurrence.data.description)s",
         "severity" : 3,
         "categories" : ["readability"]
         },
@@ -346,7 +346,7 @@ issues_data = {
         },
     "E0902" : {
         "title" : "IOError",
-        "description" : "%(occurence.data.description)s",
+        "description" : "%(occurrence.data.description)s",
         "severity" : 1,
         "categories" : ["correctness"]
         },
