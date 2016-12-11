@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 import abc
-import hashlib
+from checkmate.helpers.hashing import Hasher
 
 class AnalyzerSettingsError(BaseException):
 
@@ -33,7 +33,7 @@ class BaseAnalyzer(object):
             for code in ignore:
                 self.ignore[code] = True
 
-    def get_fingerprint_from_code(self,file_revision,location):
+    def get_fingerprint_from_code(self,file_revision,location, extra_data=None):
         """
         This function generates a fingerprint from a series of code snippets.
 
@@ -60,7 +60,14 @@ class BaseAnalyzer(object):
                     s+=lines[current_row-1]
                     current_row+=1
                 s+=lines[current_row-1][:to_column]
-        return hashlib.sha1(s).hexdigest()
+
+        hasher = Hasher()
+        hasher.add(s)
+
+        if extra_data is not None:
+            hasher.add(extra_data)
+
+        return hasher.digest.hexdigest()
 
     @classmethod
     def validate_settings(cls,settings):
