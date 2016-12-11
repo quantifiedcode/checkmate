@@ -75,7 +75,10 @@ class IssueClass(BaseDocument):
     language = CharField(indexed = True,length = 50)
     code = CharField(indexed = True,length = 50)
     description = TextField(indexed = False)
+
+    #obsolete
     occurrence_description = CharField(indexed = True,length = 2000)
+
     severity = IntegerField(indexed = True)
     categories = ManyToManyField('IssueCategory')
 
@@ -166,7 +169,6 @@ class Diff(BaseDocument):
     def _get_issues_count_sql(self, by_severity=False):
 
         diff_issue_occurrence_table = self.backend.get_table(DiffIssueOccurrence)
-
         issue_class_table = self.backend.get_table(self.project.IssueClass)
         project_issue_class_table = self.backend.get_table(ProjectIssueClass)
         issue_occurrence_table = self.backend.get_table(IssueOccurrence)
@@ -520,7 +522,7 @@ class Project(BaseDocument):
         if extra_fields is None:
             extra_fields = []
 
-        issue_classes = self.get_issue_classes(include = (('categories','name'),),sort = [('categories.name',1)],only = extra_fields + ['title','analyzer','language','severity','occurrence_description','code','pk'],raw = True)
+        issue_classes = self.get_issue_classes(include = (('categories','name'),),sort = [('categories.name',1)],only = extra_fields + ['title','analyzer','language','severity','description','code','pk'],raw = True)
         grouped_issue_data = {}
 
         for issue_class in issue_classes:
@@ -537,7 +539,7 @@ class Project(BaseDocument):
                 'severity' : issue_class['severity'],
                 'title' : issue_class['title'],
                 'categories' : [category['name'] for category in issue_class['categories']],
-                'description' : issue_class['occurrence_description'],
+                'description' : issue_class['description'],
                 'code' : issue_class['code'],
                 'pk' : issue_class['pk']
             }
