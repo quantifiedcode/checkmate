@@ -56,7 +56,7 @@ class Pep8Analyzer(BaseAnalyzer):
             os.unlink(temp_filename)
         #we add the fingerprints...
         for issue in result.issues:
-            issue['fingerprint'] = self.get_fingerprint_from_code(file_revision,issue['location'])
+            issue['fingerprint'] = self.get_fingerprint_from_code(file_revision, issue['location'], extra_data=issue['data'])
         return {'issues' : result.issues}
 
 class Reporter(pep8.BaseReport):

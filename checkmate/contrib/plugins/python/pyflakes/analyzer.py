@@ -29,7 +29,7 @@ class PyFlakesAnalyzer(BaseAnalyzer):
         pyflakes_check(file_revision.get_file_content(),file_revision.path,reporter)
         for issue in reporter._issues:
             if not issue.get('fingerprint'):
-                issue['fingerprint'] = self.get_fingerprint_from_code(file_revision,issue['location'])
+                issue['fingerprint'] = self.get_fingerprint_from_code(file_revision,issue['location'], extra_data=issue['data'])
         return {'issues' : reporter._issues}
 
 class Reporter(BaseReporter):

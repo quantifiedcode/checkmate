@@ -77,7 +77,7 @@ class PyLintAnalyzer(BaseAnalyzer):
                     else list(value) if isinstance(value,set) else value
             issues = reporter.get_issues()
             for issue in issues:
-                issue['fingerprint'] = self.get_fingerprint_from_code(file_revision,issue['location'])
+                issue['fingerprint'] = self.get_fingerprint_from_code(file_revision,issue['location'], extra_data=issue['data'])
             return {'stats':sanitized_stats,'issues':issues}
         except KeyboardInterrupt:
             raise
