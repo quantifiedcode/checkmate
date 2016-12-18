@@ -44,6 +44,8 @@ class GitRepository(BaseDocument):
 
     def get_settings(self):
         default_branch = self.get_default_branch()
+        if default_branch is None:
+            return
         branches = self.repository.get_branches()
         if default_branch in branches:
             latest_commit = self.repository.get_commits(default_branch,limit = 1)[0]
@@ -57,7 +59,7 @@ class GitRepository(BaseDocument):
                     raise ValueError("Cannot parse checkmate YML file!")
             except:
                 logger.warning("No .checkmate.yml file found!")
-        return None
+        return
 
     @property
     def repository(self):
@@ -110,13 +112,13 @@ class GitRepository(BaseDocument):
     def get_default_branch(self):
         branches = self.repository.get_branches()
         if self.default_branch in branches:
-            return self.project.default_branch
+            return self.default_branch
         elif 'origin/master' in branches:
             return 'origin/master'
         elif branches:
             return branches[0]
         else:
-            raise AttributeError("No default branch defined!")
+            return
 
 class GitSnapshot(BaseDocument):
 

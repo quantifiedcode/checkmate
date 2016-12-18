@@ -96,6 +96,8 @@ class Command(BaseCommand):
             branch_name = self.project.git.get_default_branch()
         else:
             branch_name = self.opts['branch']
+        if branch_name is None:
+            raise eslf.CommandException("No default branch defined!")
         try:
             branch = self.backend.get(GitBranch,
                                       {'project.pk' : self.project.pk,'name' : branch_name })
