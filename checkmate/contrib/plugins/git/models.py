@@ -109,13 +109,8 @@ class GitRepository(BaseDocument):
 
     def get_default_branch(self):
         branches = self.repository.get_branches()
-        if 'default_branch' in self.project and self.project.default_branch in branches:
+        if self.default_branch in branches:
             return self.project.default_branch
-        elif 'github_data' in self.project and 'default_branch' in self.project.github_data \
-          and 'origin/'+self.project.github_data['default_branch'] in branches:
-            return 'origin/'+self.project.github_data['default_branch']
-        elif 'master' in branches:
-            return 'master'
         elif 'origin/master' in branches:
             return 'origin/master'
         elif branches:
