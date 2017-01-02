@@ -397,6 +397,10 @@ class Project(BaseDocument):
     class Meta(Document.Meta):
         collection = "project"
 
+    @property
+    def settings(self):
+        return self.get('settings',{})
+
     def get_issue_classes(self,backend = None,enabled = True,sort = None,**kwargs):
         """
         Retrieves the issue classes for a given backend
