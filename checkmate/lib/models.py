@@ -316,18 +316,6 @@ class Snapshot(BaseDocument):
         Exports a snapshot to a data structure
         """
 
-
-    def load(self, data):
-        """
-        Imports a snapshot from a data structure
-        """
-        pass
-
-    def export(self):
-        """
-        Exports a snapshot to a data structure
-        """
-
     def summarize_issues(self, include_filename=False):
         if isinstance(self.backend, SqlBackend):
             return self._summarize_issues_sql(include_filename=include_filename)
@@ -402,93 +390,12 @@ class Project(BaseDocument):
 
     IssueClass = IssueClass
 
-    #contains a hash of the project configuration that will be used to mark snapshots, diffs, file revisions etc.
+    # contains a hash of the project configuration that will be used to mark
+    # snapshots, diffs, file revisions etc.
     configuration = CharField(indexed = True, length = 64)
 
     class Meta(Document.Meta):
         collection = "project"
-
-    def validate_settings(self,settings):
-
-        errors = {}
-
-        def add_to_errors(path,message):
-            e = errors
-            for element in path[:-1]:
-                if not element in e:
-                    e[element] = {}
-                e = e[element]
-            e[path[-1]] = message
-
-        def validate_analyzer_settings(k,s):
-
-            from checkmate.settings import analyzers
-
-            def check_code_exists(key,analyzer,code):
-                if not code in analyzers[analyzer]['issues_data']:
-                    errors
-            for key,value in s.items():
-                if not key in analyzers:
-                    add_to_errors([k,key],'Invalid analyzer')
-                    continue
-                if 'enable' in value and 'disable' in value:
-                    add_to_errors([k,key],'You cannot specify both "enable" and "disable"!')
-                    continue
-                for sk,sv in value.items():
-                    if sk in ('enable','disable'):
-                        if not  isinstance(sv,(list,tuple)):
-                            add_to_errors([k,key,sk],'"enable" must be a list of issue codes!')
-                        for code in sv:
-                            if not isinstance(code,(str,unicode)):
-                                add_to_errors([k,key,sk,str(code)],'must be a string!')
-                            if not code in analyzers[key]['issues_data']:
-                                add_to_errors([k,key,sk,code],{
-                                    'message' : 'invalid issue code!',
-                                    'choices' : analyzers[key]['issues_data'].keys()})
-                    elif sk == 'settings':
-                        try:
-                            analyzers[key]['class'].validate_settings(sv)
-                        except AnalyzerSettingsError as e:
-                            add_to_errors([k,key,'settings'],e.errors)
-                        except NotImplementedError:
-                            add_to_errors([k,key,'settings'],'analyzer does not accept settings!')
-
-        def validate_aggregator_settings(k,s):
-            add_to_errors([k],"Currently unsupported!")
-
-        def validate_ignore_settings(k,s):
-            if not isinstance(s,(str,unicode)):
-                add_to_errors([k],'must be a string!')
-
-        def validate_branches_settings(k,s):
-            add_to_errors([k],"Currently unsupported!")
-
-        for key,value in settings.items():
-            if key == 'analyzers':
-                validate_analyzer_settings(key,value)
-            elif key == 'aggregators':
-                validate_aggregator_settings(key,value)
-            elif key == 'ignore':
-                validate_ignore_settings(key,value)
-            elif key == 'branches':
-                validate_branches_settings(key,value)
-            else:
-                errors[key] = 'invalid settings key!'
-        if errors:
-            raise self.SettingsValidationError(errors)
-
-    @property
-    def settings(self):
-        base_settings =  self.get('settings',{})
-        #we add the issue_classes to the analyzer settings.
-        issue_classes = self.get_issue_classes(sort = [('categories.name',1)],include = ('categories',))
-        if not 'analyzers' in base_settings:
-            base_settings['analyzers'] = {}
-        for issue_class in issue_classes:
-            if not issue_class.analyzer in base_settings['analyzers']:
-                base_settings['analyzers'][issue_class.analyzer] = {'issue_classes' : []}
-            base_settings['analyzers'][issue_class.analyzer]['issue_classes'].append(issue_class)
-        return base_settings
 
     def get_issue_classes(self,backend = None,enabled = True,sort = None,**kwargs):
         """
@@ -522,7 +429,17 @@ class Project(BaseDocument):
         if extra_fields is None:
             extra_fields = []
 
-        issue_classes = self.get_issue_classes(include = (('categories','name'),),sort = [('categories.name',1)],only = extra_fields + ['title','analyzer','language','severity','description','code','pk'],raw = True)
+        issue_classes = self.get_issue_classes(include = (('categories','name'),),
+                                               sort = [('categories.name',1)],
+                                               only = extra_fields + \
+                                                      ['title',
+                                                       'analyzer',
+                                                       'language',
+                                                       'severity',
+                                                       'description',
+                                                       'code',
+                                                       'pk'],
+                                               raw = True)
         grouped_issue_data = {}
 
         for issue_class in issue_classes:

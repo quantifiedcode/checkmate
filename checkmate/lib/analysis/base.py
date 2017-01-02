@@ -20,11 +20,9 @@ class BaseAnalyzer(object):
 
     def __init__(self,
                  code_environment,
-                 issue_classes=None,
                  settings=None,
                  ignore=None):
         self.code_environment = code_environment
-        self.issue_classes = issue_classes
         if settings:
             self.validate_settings(settings)
         self.settings = settings

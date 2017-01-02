@@ -16,19 +16,19 @@ issues_data = {
                         },
     "UnusedImport" : {
                         "title"  : "unused import",
-                        "categories" : ["readability","maintainability","efficiency"],
+                        "categories" : ["readability","maintainability","performance"],
                         "severity" : 3,
                         "description" : "%(issue.data.description)s"
                      },
     "UnusedVariable" : {
                         "title"  : "unused variable",
-                        "categories" : ["readability","maintainability","efficiency"],
+                        "categories" : ["readability","maintainability","performance"],
                         "severity" : 3,
                         "description" : "%(issue.data.description)s"
                         },
     "RedefinedWhileUnused" : {
                         "title" : "redefined while unused",
-                        "categories" : ["readability","maintainability","correctness","efficiency"],
+                        "categories" : ["readability","maintainability","correctness","performance"],
                         "severity" : 2,
                         "description" : "%(issue.data.description)s"
                         },

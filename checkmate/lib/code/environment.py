@@ -235,7 +235,6 @@ class CodeEnvironment(object):
 
         if 'ignore' in self.project_settings:
             checkignore = self.project_settings['ignore']
-            print checkignore
             filters.append(lambda filenames : filter_filenames_by_checkignore(filenames,checkignore))
 
         file_revisions_by_path = {fr.path : fr for fr in file_revisions}
@@ -287,7 +286,6 @@ class CodeEnvironment(object):
 
         try:
             analyzer = analyzer_class(self,
-                                      issue_classes = parameters.get('issue_classes'),
                                       settings = parameters.get('settings'),
                                       ignore = parameters.get('ignore')
                                       )
