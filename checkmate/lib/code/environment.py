@@ -726,10 +726,12 @@ class CodeEnvironment(object):
                         issue_dict['hash'] = hasher.digest.hexdigest()
 
                         try:
+                            #we check if the issue already exists
                             issue = self.project.backend.get(Issue,{'hash' : issue_dict['hash'],
-                                                            'project' : self.project
-                                                        })
+                                                                    'project' : self.project
+                                                                   })
                         except Issue.DoesNotExist:
+                            #if not, we create it
                             d = issue_dict.copy()
                             d['analyzer'] = analyzer_name
                             if 'location' in d:
@@ -750,12 +752,19 @@ class CodeEnvironment(object):
                             hasher.add(occurrence.get('to_column'))
                             hasher.add(occurrence.get('sequence'))
                             occurrence['hash'] = hasher.digest.hexdigest()
-                            occurrence = IssueOccurrence(occurrence)
-                            occurrence.issue = issue
-                            occurrence.file_revision = file_revision
-                            self.project.backend.save(occurrence)
-                            annotations['occurrences'].append(occurrence)
 
+                            try:
+                                #we check if the occurrence already exists
+                                occurrence = self.project.backend.get(IssueOccurrence,{'hash' : occurrence['hash'],
+                                                                                       'issue' : issue
+                                                                                      })
+                            except IssueOccurrence.DoesNotExist:
+                                #if not, we create it
+                                occurrence = IssueOccurrence(occurrence)
+                                occurrence.issue = issue
+                                occurrence.file_revision = file_revision
+                                self.project.backend.save(occurrence)
+                            annotations['occurrences'].append(occurrence)
                         annotations['issues'].append(issue)
 
         return annotations
