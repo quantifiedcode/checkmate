@@ -27,14 +27,9 @@ from checkmate.helpers.issue import IssuesMapReducer
 try:
     from sqlalchemy.sql import (select,
                                 insert,
-                                update,
                                 func,
                                 and_,
-                                or_,
-                                not_,
                                 expression,
-                                null,
-                                distinct,
                                 exists)
 except ImportError:
     pass
@@ -109,6 +104,11 @@ class Issue(BaseDocument):
     two issues have the same fingerprint they should be judged "identical".
     """
 
+    class IgnoreReason:
+        not_specified = 0
+        not_relevant = 1
+        false_positive = 2
+
     #calculated as hash(analyzer,code,fingerprint)
     hash = CharField(indexed = True,length = 64)
     configuration = CharField(indexed = True, length = 64)
@@ -116,6 +116,13 @@ class Issue(BaseDocument):
     analyzer = CharField(indexed = True,length = 100,nullable = False)
     code = CharField(indexed = True,length = 100,nullable = False)
     fingerprint = CharField(indexed = True,length = 255,nullable = False)
+
+    #determines if this issue should be ignored
+    ignore = BooleanField(indexed=True, default=False)
+    #gives a reason for the issue to be ignored (e.g. false_positive, )
+    ignore_reason = IntegerField(indexed=True, nullable=True)
+    #an optional comment for the ignore reason
+    ignore_comment = CharField(indexed=False, length=255, nullable=True)
 
     class Meta(Document.Meta):
         unique_together = [('project','fingerprint','analyzer','code')]
