@@ -211,7 +211,7 @@ class Diff(BaseDocument):
                 counts[row['key']] += row['count']
         return counts
 
-    def _summarize_issues_sql(self, include_filename=False, ignored=False):
+    def _summarize_issues_sql(self, include_filename=False, ignore=False):
 
         diff_issue_occurrence_table = self.backend.get_table(DiffIssueOccurrence)
         issue_occurrence_table = self.backend.get_table(IssueOccurrence)
@@ -237,7 +237,7 @@ class Diff(BaseDocument):
             .where(and_(
             issue_table.c.analyzer == issue_class_table.c.analyzer,
             issue_table.c.code == issue_class_table.c.code,
-            issue_table.c.ignore == ignored,
+            issue_table.c.ignore == ignore,
             project_issue_class_table.c.project == expression.cast(self.project.pk,project_pk_type),
             project_issue_class_table.c.enabled == True))\
 
@@ -245,7 +245,7 @@ class Diff(BaseDocument):
         table = diff_issue_occurrence_table\
         .join(issue_occurrence_table,
               issue_occurrence_table.c.pk == diff_issue_occurrence_table.c.issue_occurrence)\
-        .join(issue_table, and_(issue_occurrence_table.c.issue == issue_table.c.pk, issue_table.c.ignore == ignored))\
+        .join(issue_table, and_(issue_occurrence_table.c.issue == issue_table.c.pk, issue_table.c.ignore == ignore))\
         .join(file_revision_table)
 
         #we select the aggregated issues for all file revisions in this snapshot
@@ -278,9 +278,9 @@ class Diff(BaseDocument):
         return {'added': map_reducer.mapreduce(added_issues),
                 'fixed': map_reducer.mapreduce(fixed_issues)}
 
-    def summarize_issues(self,include_filename = False, ignored=False):
+    def summarize_issues(self,include_filename = False, ignore=False):
         if isinstance(self.backend,SqlBackend):
-            return self._summarize_issues_sql(include_filename=include_filename, ignored=ignored)
+            return self._summarize_issues_sql(include_filename=include_filename, ignore=ignore)
         raise NotImplementedError
 
 class DiffIssueOccurrence(BaseDocument):
@@ -324,12 +324,12 @@ class Snapshot(BaseDocument):
         Exports a snapshot to a data structure
         """
 
-    def summarize_issues(self, include_filename=False, ignored=False):
+    def summarize_issues(self, include_filename=False, ignore=False):
         if isinstance(self.backend, SqlBackend):
-            return self._summarize_issues_sql(include_filename=include_filename, ignored=ignored)
+            return self._summarize_issues_sql(include_filename=include_filename, ignore=ignore)
         raise NotImplementedError
 
-    def _summarize_issues_sql(self, include_filename=False, ignored=False):
+    def _summarize_issues_sql(self, include_filename=False, ignore=False):
 
         snapshot_file_revisions_table = self.backend.get_table(self.fields['file_revisions'].relationship_class)
         fr_table = self.backend.get_table(FileRevision)
@@ -347,7 +347,7 @@ class Snapshot(BaseDocument):
         #we perform a JOIN of the file revision table to the issue tables
         table = fr_table\
         .join(issue_occurrence_table,fr_table.c.pk == issue_occurrence_table.c.file_revision)\
-        .join(issue_table, and_(issue_table.c.pk == issue_occurrence_table.c.issue, issue_table.c.ignore == ignored))
+        .join(issue_table, and_(issue_table.c.pk == issue_occurrence_table.c.issue, issue_table.c.ignore == ignore))
 
         #here we make sure that the given issue class is enabled for the project
         subselect = select([issue_class_table.c.pk])\
@@ -355,7 +355,7 @@ class Snapshot(BaseDocument):
             .where(and_(
                 issue_table.c.analyzer == issue_class_table.c.analyzer,
                 issue_table.c.code == issue_class_table.c.code,
-                issue_table.c.ignore == ignored,
+                issue_table.c.ignore == ignore,
                 project_issue_class_table.c.project == expression.cast(self.project.pk,project_pk_type),
                 project_issue_class_table.c.enabled == True))\
 
