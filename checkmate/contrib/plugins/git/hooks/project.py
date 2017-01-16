@@ -9,9 +9,9 @@ def before_project_save(settings, project):
 def before_project_reset(settings, project):
     backend = project.backend
     branches = backend.filter(GitBranch,{'project' : project})
-    logger.info("Deleting %d branches" % len(branches))
+    logger.debug("Deleting %d branches" % len(branches))
     branches.delete()
     snapshots = backend.filter(GitSnapshot,{'snapshot.project' : project})
-    logger.info("Deleting %d snapshots" % len(snapshots))
+    logger.debug("Deleting %d snapshots" % len(snapshots))
     snapshots.delete()
 	#do not call commit here, as this is done above
