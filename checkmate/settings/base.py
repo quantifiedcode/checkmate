@@ -13,13 +13,15 @@ from . import defaults
 logger = logging.getLogger(__name__)
 project_path = os.path.dirname(os.path.dirname(__file__))
 
-def update_recursively(d, ud):
+def update_recursively(d, ud, overwrite=True):
     for key, value in ud.items():
         if key not in d:
             d[key] = value
         elif isinstance(value,dict):
             update_recursively(d[key], value)
         else:
+            if key in d and not overwrite:
+                return
             d[key] = value
 
 class Settings(object):
@@ -57,7 +59,7 @@ class Settings(object):
         self.language_patterns = language_patterns if language_patterns is not None else defaults.language_patterns.copy()
 
     def initialize(self):
-        logger.info("Initializing checkmate settings...")
+        logger.debug("Initializing checkmate settings...")
         self.load_plugins()
 
     def call_hooks(self, name,*args,**kwargs):
@@ -107,12 +109,14 @@ class Settings(object):
 
     def load(self, project_path=None):
         home = os.path.expanduser('~')
-        possible_config_paths = [os.path.join(home),os.path.join(os.getcwd())]
+        possible_config_paths = [home,os.path.join(os.getcwd())]
         if project_path is not None:
-            possible_config_paths.insert(0, project_path)
+            possible_config_paths.append(project_path)
+        d = {}
         for possible_config_path in possible_config_paths:
+            print(possible_config_path)
             possible_config_filename = os.path.join(possible_config_path,'.checkmate.yml')
             if os.path.exists(possible_config_filename) and os.path.isfile(possible_config_filename):
                 with open(possible_config_filename,'r') as config_file:
-                    return yaml.load(config_file.read())
-        return None
+                    update_recursively(d,yaml.load(config_file.read()))
+        return d
