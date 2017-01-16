@@ -170,7 +170,7 @@ class Command(BaseCommand,AnalyzeCommand):
                          'snapshot_b' : git_snapshot_b.snapshot}
                 diff = self.backend.get(Diff,query)
             except Diff.DoesNotExist:
-                logger.info("Generating a diff between snapshots %s and %s" % (git_snapshot_a.sha,
+                logger.debug("Generating a diff between snapshots %s and %s" % (git_snapshot_a.sha,
                                                                                git_snapshot_b.sha))
             #if the configuration of the diff does not match the project configuration, we regenerate it
             if diff is None or diff.configuration != self.project.configuration:
@@ -188,7 +188,7 @@ class Command(BaseCommand,AnalyzeCommand):
 
     def update_branch(self,branch_name,head_snapshot = None):
 
-        logger.info("Updating info for branch %s" % branch_name)
+        logger.debug("Updating info for branch %s" % branch_name)
 
         hasher = Hasher()
         hasher.add(branch_name)
@@ -202,7 +202,7 @@ class Command(BaseCommand,AnalyzeCommand):
             branch = self.backend.get(GitBranch,
                                       {'project.pk' : self.project.pk,'name' : branch_name})
         except GitBranch.DoesNotExist:
-            logger.info("Creating branch....")
+            logger.debug("Creating branch....")
             #we save the new branch instead...
             with self.backend.transaction():
                 self.backend.save(branch)
@@ -270,7 +270,7 @@ class Command(BaseCommand,AnalyzeCommand):
 
         else:
             if self.opts['shas']:
-                logger.info("Analyzing %d snapshots" % len(self.opts['shas'].split(",")))
+                logger.debug("Analyzing %d snapshots" % len(self.opts['shas'].split(",")))
                 if isinstance(self.opts['shas'],(str,unicode)):
                     shas = self.opts['shas'].split(",")
                 else:

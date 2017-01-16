@@ -313,14 +313,14 @@ class CodeEnvironment(object):
         #We just generate code objects and issues
         #for the modified file revisions, to save time when diffing.
 
-        logger.info("Generating list of modified file revisions...")
+        logger.debug("Generating list of modified file revisions...")
         modified_file_revisions_by_path = {}
         for fr_type in ('modified','added','deleted'):
             for fr in file_revisions_diff[fr_type]:
                 if not fr.path in modified_file_revisions_by_path:
                     modified_file_revisions_by_path[fr.path] = fr
 
-        logger.info("Generating list of modified issues...")
+        logger.debug("Generating list of modified issues...")
 
         modified_file_revisions_a = [fr for fr in file_revisions_a
                                      if fr.path in modified_file_revisions_by_path]
@@ -347,7 +347,7 @@ class CodeEnvironment(object):
         else:
             issue_occurrences_b = []
 
-        logger.info("Diffing issues (%d in A, %d in B)" % (len(issue_occurrences_a),
+        logger.debug("Diffing issues (%d in A, %d in B)" % (len(issue_occurrences_a),
                                                            len(issue_occurrences_b)))
 
 
@@ -356,7 +356,7 @@ class CodeEnvironment(object):
                                               issue_occurrence_key,
                                               issue_occurrence_comparator)
 
-        logger.info("Diffing summary...")
+        logger.debug("Diffing summary...")
         summary_diff = self.diff_summaries(snapshot_a,snapshot_b)
 
         if diff is None:
@@ -519,7 +519,7 @@ class CodeEnvironment(object):
         filtered_file_revisions =  self.filter_file_revisions(file_revisions)
 
         for file_revision in filtered_file_revisions:
-            logger.info("Analyzing: "+file_revision['path'])
+            logger.info("Analyzing file revision "+file_revision['path'])
             file_revision.language = self.get_language(file_revision)
             file_revision.results = self.analyze_file_revision(file_revision,
                 {analyzer_name : analyzer_params
@@ -578,7 +578,7 @@ class CodeEnvironment(object):
         * After analysis, calculate the hash value based on path, SHA and dependencies
         """
 
-        logger.info("Analyzing code environment...")
+        logger.debug("Analyzing code environment...")
 
         if snapshot is None:
             snapshot = Snapshot()
