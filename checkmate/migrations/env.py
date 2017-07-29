@@ -43,7 +43,7 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    print "Running migrations online"
+    print("Running migrations online")
 
     project_path = get_project_path()
     project_config = get_project_config(project_path)

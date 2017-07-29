@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from base import BaseCommand
+from .base import BaseCommand
 
 import logging
 import sys
@@ -46,4 +46,4 @@ class Command(BaseCommand):
             snapshots.delete()
 
             self.settings.call_hooks('project.reset.after', self.project)
-        print "Done"
+        print("Done.")

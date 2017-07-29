@@ -105,11 +105,11 @@ def get_backend(project_path,project_config,settings,echo = False,initialize_db 
         return backend
 
         #we run the Alembic migration script.
-        print "Running migrations..."
+        print("Running migrations...")
         from checkmate.management.commands.alembic import Command as AlembicCommand
         alembic_command = AlembicCommand(None,backend,args = ['upgrade','head'])
         alembic_command.run()
-        print "Done running migrations..."
+        print("Done running migrations...")
 
     return backend
 

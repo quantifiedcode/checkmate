@@ -73,7 +73,7 @@ class TestProjectDiffing(RepositoryBasedTest):
             diff = self.backend.get(Diff,{'snapshot_a.git_snapshot' : last_snapshot,
                                           'snapshot_b.git_snapshot' : snapshot})
             assert diff.issue_occurrences
-            print len(diff.issue_occurrences) == 10
+
             if i == 0:
                 assert len(diff.file_revisions) == 1
                 assert len(diff.file_revisions.filter({'key' : 'deleted'})) == 1

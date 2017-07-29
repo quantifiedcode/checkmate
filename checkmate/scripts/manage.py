@@ -100,14 +100,14 @@ def main():
                            args = sys.argv[1+len(command_chain):])
     try:
         if 'help' in command.opts and command.opts['help']:
-            print command.help_message()
+            print(command.help_message())
             exit(0)
         result = command.run()
         if hasattr(command,'serialize'):
             result_str = command.serialize(result,'text')
-            print result_str
+            print(result_str)
     except KeyboardInterrupt:
-        print "[CTRL-C pressed, aborting]"
+        print("[CTRL-C pressed, aborting]")
         exit(-1)
 
 if __name__ == '__main__':

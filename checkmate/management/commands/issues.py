@@ -46,5 +46,5 @@ class Command(BaseCommand):
                              .sort('analyzer',1)
 
         for issue in issues:
-            print "%(analyzer)s\t%(code)s\t" % {'analyzer' : issue['analyzer'],
-                                                'code' : issue['code']}
+            print("%(analyzer)s\t%(code)s\t" % {'analyzer' : issue['analyzer'],
+                                                'code' : issue['code']})

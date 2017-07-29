@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from base import BaseCommand
+from .base import BaseCommand
 from checkmate.management.helpers import save_project_config
 
 import sys

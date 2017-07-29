@@ -22,7 +22,7 @@ class Command(BaseCommand):
         if not hasattr(self.project,'props'):
             self.project.props = {}
         if propname in self.project.props:
-            print self.project.props[propname]
+            print(self.project.props[propname])
             return 0
         else:
             sys.stderr.write("Unknown property: %s\n" % propname)

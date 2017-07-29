@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from base import BaseCommand
+from .base import BaseCommand
 
 import sys
 
