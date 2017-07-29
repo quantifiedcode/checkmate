@@ -483,9 +483,11 @@ class CodeEnvironment(object):
             for analyzer_name,analyzer_params in {name : analyzer
                     for name, analyzer in self.analyzers.items()
                     if analyzer['language'] == language}.items():
+
                     analyzer = self.init_analyzer(analyzer_name,analyzer_params)
                     if analyzer is None:
                         continue
+
                     for key in file_revisions_by_key:
                         try:
                             if hasattr(analyzer,'summarize_all'):
@@ -535,9 +537,11 @@ class CodeEnvironment(object):
 
         for analyzer_name,analyzer_params in analyzers.items():
             try:
+
                 analyzer = self.init_analyzer(analyzer_name,analyzer_params)
                 if analyzer is None:
                     continue
+
                 start = time.time()
                 analyzer_results = analyzer.analyze(file_revision)
                 stop = time.time()

@@ -118,7 +118,7 @@ class Issue(BaseDocument):
     fingerprint = CharField(indexed = True,length = 255,nullable = False)
 
     #determines if this issue should be ignored
-    ignore = BooleanField(indexed=True, default=False, nullable=False)
+    ignore = BooleanField(indexed=True, default=False, nullable=False, server_default=False)
     #gives a reason for the issue to be ignored (e.g. false_positive, )
     ignore_reason = IntegerField(indexed=True, nullable=True)
     #an optional comment for the ignore reason
